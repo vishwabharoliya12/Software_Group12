@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Smart Campus – Admin Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: #D9D9D9; margin: 0; }
+
+    /* TOP BAR */
+    .topbar {
+      background: #F7F7F7; height: 73px; display: flex; align-items: center;
+      justify-content: space-between; padding: 0 20px 0 10px;
+      border-bottom: 1px solid #D9D9D9; position: sticky; top: 0; z-index: 300;
+    }
+    .au-logo {
+      width: 54px; height: 54px; border: 2.5px solid #792117;
+      display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr;
+      gap: 3px; padding: 5px;
+    }
+    .au-logo span { background: #792117; display: block; }
+    .au-logo span:nth-child(2), .au-logo span:nth-child(3) { background: transparent; border: 1.5px solid #792117; }
+    .brand-name { font-size: 11px; font-weight: 700; color: #111; line-height: 1.3; }
+    .site-title {
+      font-size: 20px; font-weight: 600; color: rgba(0,0,0,0.7);
+      letter-spacing: -0.28px; position: absolute; left: 50%; transform: translateX(-50%);
+    }
+    .topbar-right { display: flex; align-items: center; gap: 6px; }
+    .icon-wrap {
+      position: relative; width: 32px; height: 32px; display: flex;
+      align-items: center; justify-content: center; font-size: 19px; color: #333; cursor: pointer;
+    }
+    .notif-badge {
+      position: absolute; top: -2px; right: -2px; background: #b3261e; color: #fff;
+      font-size: 9px; font-weight: 600; min-width: 16px; height: 16px;
+      border-radius: 100px; display: flex; align-items: center; justify-content: center; padding: 0 3px;
+    }
+    .avatar-wrap { display: flex; align-items: center; gap: 4px; cursor: pointer; }
+    .avatar {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: linear-gradient(135deg, #792117, #5a1a10);
+      color: #fff; display: flex; align-items: center; justify-content: center;
+      font-size: 15px; font-weight: 700;
+    }
+
+    /* MAIN NAV */
+    .mainnav {
+      background: #792117; height: 48px; display: flex; align-items: center;
+      justify-content: space-between; padding: 0 20px;
+      box-shadow: 0 4px 4px rgba(0,0,0,0.25); position: sticky; top: 73px; z-index: 200;
+    }
+    .mainnav-links { display: flex; align-items: center; gap: 0; }
+    .hamburger { color: #D9D9D9; font-size: 22px; margin-right: 10px; cursor: pointer; }
+    .nav-item {
+      color: #D9D9D9; font-size: 16px; font-weight: 600;
+      letter-spacing: -0.24px; padding: 6px 16px; text-decoration: none;
+      border-radius: 4px; transition: background 0.14s; cursor: pointer;
+      display: inline-flex; align-items: center; gap: 5px;
+    }
+    .nav-item:hover, .nav-item.active { background: rgba(255,255,255,0.12); color: #fff; }
+    .count-badge {
+      background: #c21a30; color: #fff; border-radius: 10px;
+      font-size: 10px; font-weight: 700; padding: 1px 6px;
+    }
+    .search-box { position: relative; }
+    .search-box input {
+      background: #F7F7F7; border: 1px solid #D9D9D9; border-radius: 9999px;
+      font-size: 14px; color: #666; padding: 4px 36px 4px 14px;
+      width: 140px; outline: none; font-family: 'Inter', sans-serif;
+    }
+    .search-box input::placeholder { color: #b3b3b3; }
+    .search-box .bi-search { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: #888; font-size: 13px; }
+
+    /* PAGE SHELL */
+    .page-section { display: none; padding: 28px 32px 50px; }
+    .page-section.active { display: block; }
+    .welcome { font-size: 22px; font-weight: 700; color: rgba(0,0,0,0.66); letter-spacing: -0.3px; margin-bottom: 4px; }
+    .page-title { font-size: 36px; font-weight: 800; color: rgba(0,0,0,0.66); letter-spacing: -0.4px; margin-bottom: 24px; }
+
+    /* STAT CARDS */
+    .stat-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin-bottom: 24px; }
+    .stat-card {
+      background: #D9D9D9; padding: 18px 20px; display: flex; align-items: center;
+      gap: 14px; cursor: pointer; transition: box-shadow .15s, transform .15s;
+    }
+    .stat-card:hover { box-shadow: 0 4px 14px rgba(0,0,0,.1); transform: translateY(-1px); }
+    .stat-icon { font-size: 34px; }
+    .stat-icon.blue  { color: #2563eb; }
+    .stat-icon.amber { color: #d97706; }
+    .stat-icon.green { color: #16a34a; }
+    .stat-icon.red   { color: #dc2626; }
+    .stat-num { font-size: 32px; font-weight: 800; color: rgba(0,0,0,0.7); letter-spacing: -0.4px; line-height: 1; }
+    .stat-label { font-size: 14px; color: rgba(0,0,0,0.56); letter-spacing: -0.16px; margin-top: 4px; }
+
+    /* PANELS */
+    .bottom-row { display: grid; grid-template-columns: 1fr 383px; gap: 16px; }
+    .panel { background: #F7F7F7; padding: 0; }
+    .panel-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 14px 10px; }
+    .panel-title { font-size: 20px; font-weight: 600; color: rgba(0,0,0,0.7); }
+    .view-all { font-size: 12px; color: rgba(0,0,0,0.7); text-decoration: none; display: flex; align-items: center; gap: 4px; cursor: pointer; }
+    .view-all:hover { color: #792117; }
+
+    /* TABLES */
+    .issue-table { width: 100%; border-collapse: collapse; }
+    .issue-table thead tr { background: #D9D9D9; }
+    .issue-table th { font-size: 13px; font-weight: 500; color: rgba(0,0,0,0.7); padding: 10px 12px; text-align: left; }
+    .issue-table td { font-size: 13px; font-weight: 500; color: rgba(0,0,0,0.7); padding: 9px 12px; border-bottom: 1px solid #D9D9D9; }
+    .issue-table tr:last-child td { border-bottom: none; }
+    .issue-table tbody tr:hover { background: #fafafa; }
+
+    /* PILLS */
+    .pill {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 3px 0; border-radius: 15px; font-size: 11px; font-weight: 300;
+      color: #fff; width: 100px; text-align: center;
+    }
+    .pill-green  { background: #78a67a; }
+    .pill-blue   { background: #74b1cc; }
+    .pill-yellow { background: #e3b143; }
+    .pill-red    { background: #ef4444; }
+    .pill-teal   { background: #599e8a; }
+    .pill-orange { background: #ec5e45; }
+    .pill-purple { background: #8b5cf6; }
+
+    /* EMERGENCY PANEL */
+    .right-col { display: flex; flex-direction: column; gap: 16px; }
+    .emerg-panel { background: #F7F7F7; }
+    .emerg-header-bar { background: #c21a30; display: grid; grid-template-columns: 1fr 1fr; padding: 8px 14px; }
+    .emerg-header-bar span { font-size: 13px; font-weight: 500; color: #D9D9D9; }
+    .emerg-row { display: grid; grid-template-columns: 1fr 126px; align-items: center; padding: 10px 14px; border-bottom: 1px solid #D9D9D9; font-size: 13px; color: rgba(0,0,0,0.7); font-weight: 500; cursor: pointer; }
+    .emerg-row:last-child { border-bottom: none; }
+    .emerg-row:hover { background: #fafafa; }
+
+    /* LOWER ROW */
+    .lower-row { display: grid; grid-template-columns: 557px 301px 1fr; gap: 16px; margin-top: 16px; }
+    .lower-panel { background: #F7F7F7; }
+    .lower-panel-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 14px 8px; }
+    .lower-panel-title { font-size: 20px; font-weight: 600; color: rgba(0,0,0,0.7); }
+
+    /* CONTENT PANEL (forms/tables inside pages) */
+    .content-panel {
+      background: #F7F7F7; border-radius: 12px; padding: 28px 32px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06); margin-bottom: 20px;
+    }
+    .content-panel label { font-size: 13px; font-weight: 600; color: rgba(0,0,0,0.7); margin-bottom: 5px; display: block; }
+    .content-panel .form-control, .content-panel .form-select {
+      border: 1.5px solid #D9D9D9; border-radius: 8px; font-size: 14px;
+      font-family: 'Inter', sans-serif; padding: 9px 13px; outline: none;
+    }
+    .content-panel .form-control:focus, .content-panel .form-select:focus { border-color: #792117; box-shadow: none; }
+    .section-title { font-size: 18px; font-weight: 700; color: rgba(0,0,0,0.7); margin-bottom: 18px; }
+
+    /* BUTTONS */
+    .btn-maroon { background: #792117; color: #fff; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; padding: 10px 28px; cursor: pointer; font-family: 'Inter', sans-serif; transition: background .15s; }
+    .btn-maroon:hover { background: #5a1a10; }
+    .btn-danger-dark { background: #c21a30; color: #fff; border: none; border-radius: 8px; font-size: 11px; font-weight: 600; padding: 4px 14px; cursor: pointer; font-family: 'Inter', sans-serif; border-radius: 6px; }
+    .btn-danger-dark:hover { background: #a0162a; }
+    .btn-outline { background: #D9D9D9; color: rgba(0,0,0,0.7); border: none; border-radius: 8px; font-size: 14px; font-weight: 600; padding: 10px 28px; cursor: pointer; font-family: 'Inter', sans-serif; }
+    .btn-outline:hover { background: #e0e0e0; }
+    .btn-sm-maroon { font-size: 11px; color: #792117; padding: 2px 10px; border: 1px solid #792117; border-radius: 6px; background: transparent; cursor: pointer; font-family: 'Inter', sans-serif; }
+    .btn-sm-maroon:hover { background: #792117; color: #fff; }
+
+    /* FILTER BAR */
+    .filter-bar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+    .filter-btn { border: 1.5px solid #D9D9D9; border-radius: 20px; padding: 5px 16px; font-size: 13px; font-weight: 500; cursor: pointer; background: #F7F7F7; color: rgba(0,0,0,0.7); transition: all .14s; font-family: 'Inter', sans-serif; }
+    .filter-btn:hover, .filter-btn.active { background: #792117; color: #fff; border-color: #792117; }
+
+    /* STAFF CARDS */
+    .staff-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
+    .staff-card { background: #F7F7F7; border-radius: 12px; padding: 18px 20px; box-shadow: 0 1px 6px rgba(0,0,0,0.07); display: flex; align-items: flex-start; gap: 14px; }
+    .staff-avatar { width: 46px; height: 46px; border-radius: 50%; background: linear-gradient(135deg, #792117, #5a1a10); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700; flex-shrink: 0; }
+    .staff-name { font-size: 14px; font-weight: 700; color: rgba(0,0,0,0.7); }
+    .staff-role { font-size: 12px; color: rgba(0,0,0,0.5); margin-top: 2px; }
+
+    /* ACTIVITY */
+    .activity-item { display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px solid #D9D9D9; }
+    .activity-item:last-child { border-bottom: none; }
+    .activity-dot { width: 10px; height: 10px; border-radius: 50%; margin-top: 4px; flex-shrink: 0; }
+    .activity-text { font-size: 12px; color: rgba(0,0,0,0.7); line-height: 1.5; }
+    .activity-time { font-size: 11px; color: #aaa; margin-top: 2px; }
+
+    /* MODAL */
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 1000; align-items: center; justify-content: center; }
+    .modal-overlay.show { display: flex; }
+    .modal-box { background: #F7F7F7; border-radius: 16px; padding: 32px 36px; width: 540px; max-width: 95vw; position: relative; }
+    .modal-close { position: absolute; top: 16px; right: 18px; font-size: 22px; cursor: pointer; color: #888; line-height: 1; }
+    .modal-title { font-size: 18px; font-weight: 700; color: rgba(0,0,0,0.7); margin-bottom: 20px; }
+    .detail-row { display: flex; margin-bottom: 12px; font-size: 14px; }
+    .detail-key { font-weight: 600; color: rgba(0,0,0,0.7); width: 140px; flex-shrink: 0; }
+    .detail-val { color: rgba(0,0,0,0.55); }
+    .modal-actions { display: flex; gap: 10px; margin-top: 22px; align-items: center; }
+
+    /* EMERGENCY PAGE HERO */
+    .emerg-hero { background: linear-gradient(135deg,#c21a30,#792117); border-radius: 12px; padding: 24px 28px; color: #fff; margin-bottom: 20px; display: flex; align-items: center; gap: 18px; }
+    .emerg-hero-icon { font-size: 44px; opacity: 0.9; }
+    .emerg-hero h3 { font-size: 22px; font-weight: 800; margin-bottom: 2px; }
+    .emerg-hero p { font-size: 13px; opacity: 0.82; margin: 0; }
+
+    /* TOAST */
+    .toast-wrap { position: fixed; bottom: 28px; right: 28px; z-index: 9999; }
+    .toast-msg { background: #222; color: #fff; padding: 14px 22px; border-radius: 10px; font-size: 14px; font-weight: 500; display: flex; align-items: center; gap: 10px; box-shadow: 0 4px 16px rgba(0,0,0,0.2); animation: slideUp 0.3s ease; }
+    @keyframes slideUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+
+    @media (max-width:1200px) {
+      .stat-row { grid-template-columns: repeat(2,1fr); }
+      .bottom-row, .lower-row { grid-template-columns: 1fr; }
+      .staff-grid { grid-template-columns: repeat(2,1fr); }
+      .site-title { position: static; transform: none; font-size: 15px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar" style="position:relative;">
+  <div class="d-flex align-items-center gap-2">
+    <div class="au-logo"><span></span><span></span><span></span><span></span></div>
+    <div class="brand-name">Ahmedabad<br>University</div>
+  </div>
+  <div class="site-title">Smart Campus Issue Reporting System</div>
+  <div class="topbar-right">
+    <div class="icon-wrap"><i class="bi bi-bell"></i><span class="notif-badge">3</span></div>
+    <div class="icon-wrap"><i class="bi bi-chat-square"></i><span class="notif-badge">2</span></div>
+    <div class="avatar-wrap">
+      <div class="avatar">A</div>
+      <i class="bi bi-chevron-down" style="font-size:12px;color:#555;"></i>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN NAV -->
+<nav class="mainnav">
+  <div class="mainnav-links">
+    <span class="hamburger"><i class="bi bi-list"></i></span>
+    <span class="nav-item active"  onclick="showPage('dashboard')">Dashboard</span>
+    <span class="nav-item"         onclick="showPage('issues')">Issues <span class="count-badge" id="issue-badge">130</span></span>
+    <span class="nav-item"         onclick="showPage('emergency')">Emergency <span class="count-badge" id="emerg-badge">5</span></span>
+    <span class="nav-item"         onclick="showPage('staff')">Staff</span>
+    <span class="nav-item"         onclick="showPage('support')">Support</span>
+  </div>
+  <div class="search-box">
+    <input type="text" id="global-search" placeholder="Search" oninput="handleSearch(this.value)"/>
+    <i class="bi bi-search"></i>
+  </div>
+</nav>
+
+
+<!-- ════════════ PAGE: DASHBOARD ════════════ -->
+<div class="page-section active" id="page-dashboard">
+  <div class="welcome">Welcome Admin,</div>
+  <div class="page-title">Dashboard</div>
+
+  <div class="stat-row">
+    <div class="stat-card" onclick="showPage('issues')">
+      <i class="bi bi-chat-square-text stat-icon blue"></i>
+      <div><div class="stat-num">130</div><div class="stat-label">Total issues</div></div>
+    </div>
+    <div class="stat-card" onclick="showPage('issues');filterIssues('Pending')">
+      <i class="bi bi-clock stat-icon amber"></i>
+      <div><div class="stat-num">63</div><div class="stat-label">Pending issues</div></div>
+    </div>
+    <div class="stat-card" onclick="showPage('issues');filterIssues('Resolved')">
+      <i class="bi bi-check2-square stat-icon green"></i>
+      <div><div class="stat-num">67</div><div class="stat-label">Resolved issues</div></div>
+    </div>
+    <div class="stat-card" onclick="showPage('emergency')">
+      <i class="bi bi-exclamation-triangle stat-icon red"></i>
+      <div><div class="stat-num" id="emerg-stat">5</div><div class="stat-label">Active Emergencies</div></div>
+    </div>
+  </div>
+
+  <div class="bottom-row">
+    <div class="panel">
+      <div class="panel-header">
+        <span class="panel-title">Issue Overview</span>
+        <span class="view-all" onclick="showPage('issues')">View All &nbsp;<i class="bi bi-arrow-right"></i></span>
+      </div>
+      <table class="issue-table">
+        <thead><tr><th>Issue ID</th><th>Category</th><th>Location</th><th>Status</th><th>Priority</th><th></th></tr></thead>
+        <tbody id="dash-issue-tbody"></tbody>
+      </table>
+    </div>
+    <div class="right-col">
+      <div class="emerg-panel">
+        <div class="panel-header">
+          <span class="panel-title">Emergencies</span>
+          <span class="view-all" onclick="showPage('emergency')">View All &nbsp;<i class="bi bi-arrow-right"></i></span>
+        </div>
+        <div class="emerg-header-bar"><span>Description</span><span>Status</span></div>
+        <div id="dash-emerg-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="lower-row">
+    <div class="lower-panel">
+      <div class="lower-panel-header"><span class="lower-panel-title">Campus Issue Map</span></div>
+      <iframe src="https://www.openstreetmap.org/export/embed.html?bbox=72.5260%2C23.0480%2C72.5310%2C23.0520&layer=mapnik&marker=23.0500%2C72.5285"
+        style="width:100%;height:178px;border:none;display:block;" title="Campus Map"></iframe>
+    </div>
+    <div class="lower-panel">
+      <div class="lower-panel-header">
+        <span class="lower-panel-title">Active Staff</span>
+        <span class="view-all" onclick="showPage('staff')">View All <i class="bi bi-arrow-right"></i></span>
+      </div>
+      <div id="mini-staff" style="padding:6px 14px;"></div>
+    </div>
+    <div class="lower-panel">
+      <div class="lower-panel-header"><span class="lower-panel-title">Recent Activity</span></div>
+      <div id="mini-activity" style="padding:6px 14px;"></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════ PAGE: ISSUES ════════════ -->
+<div class="page-section" id="page-issues">
+  <div class="welcome">Manage all campus reports</div>
+  <div class="page-title">Issues</div>
+  <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+    <div class="filter-bar" id="issue-filter-bar">
+      <button class="filter-btn active" onclick="filterIssues('All')">All</button>
+      <button class="filter-btn" onclick="filterIssues('Pending')">Pending</button>
+      <button class="filter-btn" onclick="filterIssues('In Progress')">In Progress</button>
+      <button class="filter-btn" onclick="filterIssues('Resolved')">Resolved</button>
+      <button class="filter-btn" onclick="filterIssues('Escalated')">Escalated</button>
+    </div>
+    <select class="form-select form-select-sm" style="width:150px;border-radius:20px;" id="cat-filter" onchange="filterIssues(currentIssueFilter)">
+      <option value="">All Categories</option>
+      <option>Cleanliness</option><option>Technical</option>
+      <option>Management</option><option>Personnel</option>
+      <option>Electrical</option><option>Maintenance</option>
+    </select>
+  </div>
+  <div class="content-panel" style="padding:0;overflow:hidden;">
+    <table class="issue-table">
+      <thead><tr><th>Issue ID</th><th>Category</th><th>Location</th><th>Reported By</th><th>Status</th><th>Priority</th><th>Date</th><th>Action</th></tr></thead>
+      <tbody id="issues-tbody"></tbody>
+    </table>
+  </div>
+</div>
+
+
+<!-- ════════════ PAGE: EMERGENCY ════════════ -->
+<div class="page-section" id="page-emergency">
+  <div class="welcome">Urgent campus situations</div>
+  <div class="page-title">Emergency</div>
+  <div class="emerg-hero">
+    <div class="emerg-hero-icon"><i class="bi bi-exclamation-triangle-fill"></i></div>
+    <div>
+      <h3>Active Emergencies</h3>
+      <p>Security Hotline: <strong>1800-XXX-XXXX</strong> (24/7) &nbsp;|&nbsp; Respond promptly to all open cases.</p>
+    </div>
+  </div>
+  <div class="filter-bar" id="emerg-filter-bar">
+    <button class="filter-btn active" onclick="filterEmerg('All')">All</button>
+    <button class="filter-btn" onclick="filterEmerg('Open')">Open</button>
+    <button class="filter-btn" onclick="filterEmerg('In Progress')">In Progress</button>
+    <button class="filter-btn" onclick="filterEmerg('Resolved')">Resolved</button>
+  </div>
+  <div class="content-panel" style="padding:0;overflow:hidden;">
+    <table class="issue-table">
+      <thead><tr><th>ID</th><th>Description</th><th>Category</th><th>Location</th><th>Reported By</th><th>Status</th><th>Date</th><th>Action</th></tr></thead>
+      <tbody id="emerg-tbody"></tbody>
+    </table>
+  </div>
+</div>
+
+
+<!-- ════════════ PAGE: STAFF ════════════ -->
+<div class="page-section" id="page-staff">
+  <div class="welcome">Manage your team</div>
+  <div class="page-title">Staff</div>
+  <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+    <div class="filter-bar" id="staff-filter-bar">
+      <button class="filter-btn active" onclick="filterStaff('All')">All</button>
+      <button class="filter-btn" onclick="filterStaff('Online')">Online</button>
+      <button class="filter-btn" onclick="filterStaff('Busy')">Busy</button>
+      <button class="filter-btn" onclick="filterStaff('Offline')">Offline</button>
+    </div>
+    <button class="btn-maroon" onclick="openAddStaff()"><i class="bi bi-person-plus me-2"></i>Add Staff</button>
+  </div>
+  <div class="content-panel mb-3" style="padding:16px 24px;">
+    <div class="d-flex gap-4 flex-wrap">
+      <div><span style="font-size:26px;font-weight:800;color:rgba(0,0,0,0.7);" id="s-total">9</span><div style="font-size:12px;color:#888;">Total</div></div>
+      <div><span style="font-size:26px;font-weight:800;color:#16a34a;" id="s-online">4</span><div style="font-size:12px;color:#888;">Online</div></div>
+      <div><span style="font-size:26px;font-weight:800;color:#d97706;" id="s-busy">3</span><div style="font-size:12px;color:#888;">Busy</div></div>
+      <div><span style="font-size:26px;font-weight:800;color:#888;" id="s-offline">2</span><div style="font-size:12px;color:#888;">Offline</div></div>
+    </div>
+  </div>
+  <div class="staff-grid" id="staff-grid"></div>
+</div>
+
+
+<!-- ════════════ PAGE: SUPPORT ════════════ -->
+<div class="page-section" id="page-support">
+  <div class="welcome">Help & System Settings</div>
+  <div class="page-title">Support</div>
+  <div class="row g-4">
+    <div class="col-lg-7">
+      <div class="content-panel" style="padding:0;overflow:hidden;">
+        <div class="panel-header" style="padding:16px 20px 12px;">
+          <span class="panel-title" style="font-size:17px;">Student Support Tickets</span>
+        </div>
+        <table class="issue-table">
+          <thead><tr><th>Ticket ID</th><th>Student</th><th>Subject</th><th>Status</th><th>Date</th><th>Action</th></tr></thead>
+          <tbody id="support-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="col-lg-5">
+      <div class="content-panel mb-3">
+        <div class="section-title">System Settings</div>
+        <div class="row g-3">
+          <div class="col-12"><label>Campus Notification Email</label><input type="email" class="form-control" value="admin@ahduni.edu.in"/></div>
+          <div class="col-12"><label>Emergency Hotline</label><input type="text" class="form-control" value="1800-XXX-XXXX"/></div>
+          <div class="col-12"><label>Auto-Escalation After (days)</label><input type="number" class="form-control" value="3"/></div>
+          <div class="col-12"><button class="btn-maroon" onclick="showToast('✅ Settings saved.')">Save Settings</button></div>
+        </div>
+      </div>
+      <div class="content-panel">
+        <div class="section-title">Send Announcement</div>
+        <div class="row g-3">
+          <div class="col-12"><label>Message</label><textarea class="form-control" rows="3" placeholder="Broadcast to all students..."></textarea></div>
+          <div class="col-12"><button class="btn-maroon" onclick="showToast('📢 Announcement broadcast to all students.')"><i class="bi bi-megaphone me-2"></i>Broadcast</button></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════ ISSUE MODAL ════════════ -->
+<div class="modal-overlay" id="issue-modal">
+  <div class="modal-box">
+    <span class="modal-close" onclick="closeModal('issue-modal')">&times;</span>
+    <div class="modal-title" id="modal-issue-title">Issue Details</div>
+    <div id="modal-issue-body"></div>
+    <div class="modal-actions">
+      <select class="form-select form-select-sm" id="modal-status-sel" style="width:160px;border-radius:8px;">
+        <option>Pending</option><option>In Progress</option><option>Resolved</option><option>Escalated</option>
+      </select>
+      <button class="btn-maroon" onclick="updateIssueStatus()">Update Status</button>
+      <button class="btn-outline" onclick="closeModal('issue-modal')">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════ ADD STAFF MODAL ════════════ -->
+<div class="modal-overlay" id="staff-modal">
+  <div class="modal-box">
+    <span class="modal-close" onclick="closeModal('staff-modal')">&times;</span>
+    <div class="modal-title">Add New Staff Member</div>
+    <div class="row g-3">
+      <div class="col-6"><label style="font-size:13px;font-weight:600;display:block;margin-bottom:5px;">Full Name</label><input class="form-control" id="ns-name" placeholder="Full name"/></div>
+      <div class="col-6"><label style="font-size:13px;font-weight:600;display:block;margin-bottom:5px;">Role</label>
+        <select class="form-select" id="ns-role"><option>Cleanliness</option><option>Technical</option><option>Management</option><option>Personnel</option><option>Security</option></select></div>
+      <div class="col-6"><label style="font-size:13px;font-weight:600;display:block;margin-bottom:5px;">Email</label><input class="form-control" id="ns-email" placeholder="staff@ahduni.edu.in"/></div>
+      <div class="col-6"><label style="font-size:13px;font-weight:600;display:block;margin-bottom:5px;">Phone</label><input class="form-control" id="ns-phone" placeholder="+91 XXXXX XXXXX"/></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-maroon" onclick="addStaff()">Add Staff</button>
+      <button class="btn-outline" onclick="closeModal('staff-modal')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════ SUPPORT REPLY MODAL ════════════ -->
+<div class="modal-overlay" id="support-modal">
+  <div class="modal-box">
+    <span class="modal-close" onclick="closeModal('support-modal')">&times;</span>
+    <div class="modal-title" id="sup-modal-title">Reply to Ticket</div>
+    <div id="sup-modal-info" style="margin-bottom:14px;font-size:13px;color:rgba(0,0,0,0.6);line-height:1.8;"></div>
+    <label style="font-size:13px;font-weight:600;display:block;margin-bottom:5px;">Your Response</label>
+    <textarea class="form-control" id="sup-reply" rows="4" placeholder="Type your response to the student..."></textarea>
+    <div class="modal-actions">
+      <button class="btn-maroon" onclick="sendSupportReply()">Send Reply</button>
+      <button class="btn-outline" onclick="closeModal('support-modal')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast-wrap" id="toast-wrap" style="display:none;"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+/* ═══════════ DATA ═══════════ */
+let issues = [
+  {id:'#00001',cat:'Cleanliness', loc:'Amphitheatre',     by:'Priya S.',   status:'In Progress',priority:'No Priority',date:'1 Mar', desc:'Litter and debris around the amphitheatre seating area.'},
+  {id:'#00002',cat:'Electrical',  loc:'SAS, 101',         by:'Rohan M.',   status:'Resolved',   priority:'No Priority',date:'2 Mar', desc:'Power socket not working near whiteboard.'},
+  {id:'#00037',cat:'Maintenance', loc:'University Centre', by:'Ananya K.',  status:'In Progress',priority:'High',       date:'5 Mar', desc:'Ceiling leak above the reception desk.'},
+  {id:'#00005',cat:'Technical',   loc:'GICT, 137',        by:'Dev P.',     status:'Pending',    priority:'High',       date:'7 Mar', desc:'Projector showing no signal despite HDMI connected.'},
+  {id:'#00010',cat:'Cleanliness', loc:'Airport area',     by:'Sara T.',    status:'Resolved',   priority:'No Priority',date:'8 Mar', desc:'Garbage bins overflowing near the parking lot.'},
+  {id:'#00007',cat:'Technical',   loc:'AMSOM, 103',       by:'Farhan A.',  status:'Pending',    priority:'No Priority',date:'9 Mar', desc:'WiFi drops every 10 minutes in this room.'},
+  {id:'#00011',cat:'Management',  loc:'Library',          by:'Meena R.',   status:'Escalated',  priority:'High',       date:'10 Mar',desc:'Library closing 30 min early without notice.'},
+  {id:'#00013',cat:'Personnel',   loc:'Hostel Block A',   by:'Kiran V.',   status:'Pending',    priority:'High',       date:'11 Mar',desc:'Security guard unresponsive during night shift.'},
+  {id:'#00015',cat:'Cleanliness', loc:'SAS, 101',         by:'Neha G.',    status:'In Progress',priority:'No Priority',date:'12 Mar',desc:'Washroom near lab wing not cleaned.'},
+  {id:'#00019',cat:'Technical',   loc:'Library',          by:'Arjun D.',   status:'Resolved',   priority:'No Priority',date:'13 Mar',desc:'Library barcode scanner not working at checkout.'},
+];
+
+let emergencies = [
+  {id:'#E001',desc:'Dog Wounded near campus',  cat:'Personnel',   loc:'Airport Area',   by:'Priya S.',  status:'Open',       date:'5 Mar'},
+  {id:'#E002',desc:'Exposed electrical wiring',cat:'Technical',   loc:'GICT Building',  by:'Dev P.',    status:'Resolved',   date:'8 Mar'},
+  {id:'#E003',desc:'Sewage overflow',          cat:'Cleanliness', loc:'Amphitheatre',   by:'Rohan M.',  status:'In Progress',date:'12 Mar'},
+  {id:'#E004',desc:'Accident at parking lot',  cat:'Management',  loc:'Parking Area',   by:'Ananya K.', status:'Resolved',   date:'14 Mar'},
+  {id:'#E005',desc:'Fire alarm triggered',     cat:'Technical',   loc:'Hostel Block B', by:'Sara T.',   status:'Open',       date:'15 Mar'},
+];
+
+let staffList = [
+  {name:'Rajesh Kumar', role:'Technical',   email:'rajesh@ahduni.edu.in', phone:'98765 00001',status:'Online', assigned:3},
+  {name:'Meena Patel',  role:'Cleanliness', email:'meena@ahduni.edu.in',  phone:'98765 00002',status:'Busy',   assigned:5},
+  {name:'Arun Shah',    role:'Management',  email:'arun@ahduni.edu.in',   phone:'98765 00003',status:'Online', assigned:2},
+  {name:'Sunita Verma', role:'Personnel',   email:'sunita@ahduni.edu.in', phone:'98765 00004',status:'Offline',assigned:0},
+  {name:'Dilip Joshi',  role:'Technical',   email:'dilip@ahduni.edu.in',  phone:'98765 00005',status:'Busy',   assigned:4},
+  {name:'Kavita Nair',  role:'Cleanliness', email:'kavita@ahduni.edu.in', phone:'98765 00006',status:'Online', assigned:1},
+  {name:'Bharat Modi',  role:'Security',    email:'bharat@ahduni.edu.in', phone:'98765 00007',status:'Busy',   assigned:2},
+  {name:'Pooja Singh',  role:'Management',  email:'pooja@ahduni.edu.in',  phone:'98765 00008',status:'Online', assigned:3},
+  {name:'Harsh Trivedi',role:'Technical',   email:'harsh@ahduni.edu.in',  phone:'98765 00009',status:'Offline',assigned:0},
+];
+
+let supportTickets = [
+  {id:'#T001',student:'Alex Johnson', subject:'WiFi not working in hostel',     status:'Open',    date:'10 Mar'},
+  {id:'#T002',student:'Priya Sharma', subject:'Complaint status not updating',   status:'Replied', date:'11 Mar'},
+  {id:'#T003',student:'Rohan Mehta',  subject:'Cannot file new complaint',       status:'Open',    date:'12 Mar'},
+  {id:'#T004',student:'Ananya Kapoor',subject:'Emergency response too slow',     status:'Closed',  date:'13 Mar'},
+  {id:'#T005',student:'Dev Patel',    subject:'Wrong status shown on dashboard', status:'Open',    date:'14 Mar'},
+];
+
+const activities = [
+  {text:'Issue #00013 auto-escalated by system', time:'2 min ago',  color:'#ef4444'},
+  {text:'Staff Meena Patel resolved #00015',      time:'18 min ago', color:'#16a34a'},
+  {text:'New emergency #E005 reported',           time:'35 min ago', color:'#c21a30'},
+  {text:'Issue #00019 marked Resolved',           time:'1 hr ago',   color:'#16a34a'},
+  {text:'Ticket #T005 submitted by Dev Patel',    time:'2 hr ago',   color:'#2563eb'},
+];
+
+let currentIssueFilter = 'All';
+let currentEmergFilter = 'All';
+let currentStaffFilter = 'All';
+let currentIssueId     = null;
+let currentSupportId   = null;
+
+/* ═══════════ PILL ═══════════ */
+const pillMap = {
+  'In Progress':'pill-green','Resolved':'pill-blue','Pending':'pill-yellow',
+  'Escalated':'pill-red','Open':'pill-orange','Replied':'pill-teal','Closed':'pill-purple',
+  'No Priority':'pill-teal','High':'pill-red','Low':'pill-blue','Medium':'pill-yellow'
+};
+function pill(s,w){ return `<span class="pill ${pillMap[s]||'pill-teal'}" style="${w?'width:'+w+'px;':''}">${s}</span>`; }
+
+/* ═══════════ NAVIGATION ═══════════ */
+const navLabels = {dashboard:'Dashboard',issues:'Issues',emergency:'Emergency',staff:'Staff',support:'Support'};
+function showPage(name) {
+  document.querySelectorAll('.page-section').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>{
+    const label = n.textContent.trim().replace(/\d+/,'').trim();
+    n.classList.toggle('active', label === navLabels[name]);
+  });
+  window.scrollTo(0,0);
+  ({
+    dashboard: renderDashboard,
+    issues:    ()=>renderIssues(currentIssueFilter),
+    emergency: ()=>renderEmerg(currentEmergFilter),
+    staff:     ()=>renderStaff(currentStaffFilter),
+    support:   renderSupport
+  })[name]();
+}
+
+/* ═══════════ DASHBOARD ═══════════ */
+function renderDashboard() {
+  // stat badge update
+  const openEmerg = emergencies.filter(e=>e.status!=='Resolved').length;
+  document.getElementById('emerg-stat').textContent = openEmerg;
+  document.getElementById('emerg-badge').textContent = openEmerg;
+
+  // issue table (first 6)
+  document.getElementById('dash-issue-tbody').innerHTML = issues.slice(0,6).map(r=>`
+    <tr>
+      <td>${r.id}</td><td>${r.cat}</td><td>${r.loc}</td>
+      <td>${pill(r.status)}</td><td>${pill(r.priority)}</td>
+      <td><button class="btn-sm-maroon" onclick="openIssue('${r.id}')">Manage</button></td>
+    </tr>`).join('');
+
+  // emergency mini list
+  document.getElementById('dash-emerg-list').innerHTML = emergencies.slice(0,3).map(e=>`
+    <div class="emerg-row" onclick="showPage('emergency')">
+      <span>${e.desc}</span>${pill(e.status,100)}
+    </div>`).join('');
+
+  // mini staff (online/busy only)
+  document.getElementById('mini-staff').innerHTML = staffList.filter(s=>s.status!=='Offline').slice(0,4).map(s=>`
+    <div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid #f5f5f5;">
+      <div style="width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg, #792117, #5a1a10);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;">${s.name.split(' ').map(w=>w[0]).join('')}</div>
+      <div style="flex:1;"><div style="font-size:13px;font-weight:600;color:rgba(0,0,0,0.7);">${s.name}</div><div style="font-size:11px;color:#aaa;">${s.role}</div></div>
+      <div style="font-size:11px;font-weight:600;color:${s.status==='Online'?'#16a34a':'#d97706'};">● ${s.status}</div>
+    </div>`).join('');
+
+  // activity feed
+  document.getElementById('mini-activity').innerHTML = activities.map(a=>`
+    <div class="activity-item">
+      <div class="activity-dot" style="background:${a.color};"></div>
+      <div><div class="activity-text">${a.text}</div><div class="activity-time">${a.time}</div></div>
+    </div>`).join('');
+}
+
+/* ═══════════ ISSUES ═══════════ */
+function renderIssues(filter) {
+  currentIssueFilter = filter;
+  document.querySelectorAll('#issue-filter-bar .filter-btn').forEach(b=>{
+    b.classList.toggle('active', b.textContent.trim()===filter||(filter==='All'&&b.textContent.trim()==='All'));
+  });
+  const catF = (document.getElementById('cat-filter')||{}).value||'';
+  let data = filter==='All' ? issues : issues.filter(i=>i.status===filter);
+  if(catF) data = data.filter(i=>i.cat===catF);
+  document.getElementById('issues-tbody').innerHTML = data.length ? data.map(r=>`
+    <tr>
+      <td>${r.id}</td><td>${r.cat}</td><td>${r.loc}</td><td>${r.by}</td>
+      <td>${pill(r.status)}</td><td>${pill(r.priority)}</td><td>${r.date}</td>
+      <td><button class="btn-sm-maroon" onclick="openIssue('${r.id}')">Manage</button></td>
+    </tr>`).join('') : `<tr><td colspan="8" style="text-align:center;padding:24px;color:#aaa;">No issues found</td></tr>`;
+}
+function filterIssues(f) {
+  currentIssueFilter=f;
+  if(document.getElementById('page-issues').classList.contains('active')) renderIssues(f);
+}
+
+/* ═══════════ ISSUE MODAL ═══════════ */
+function openIssue(id) {
+  const r=issues.find(i=>i.id===id); if(!r) return;
+  currentIssueId=id;
+  document.getElementById('modal-issue-title').textContent='Issue '+r.id;
+  document.getElementById('modal-issue-body').innerHTML=`
+    <div class="detail-row"><div class="detail-key">Category</div><div class="detail-val">${r.cat}</div></div>
+    <div class="detail-row"><div class="detail-key">Location</div><div class="detail-val">${r.loc}</div></div>
+    <div class="detail-row"><div class="detail-key">Reported By</div><div class="detail-val">${r.by}</div></div>
+    <div class="detail-row"><div class="detail-key">Date</div><div class="detail-val">${r.date}</div></div>
+    <div class="detail-row"><div class="detail-key">Priority</div><div class="detail-val">${pill(r.priority)}</div></div>
+    <div class="detail-row"><div class="detail-key">Status</div><div class="detail-val">${pill(r.status)}</div></div>
+    <div class="detail-row"><div class="detail-key">Description</div><div class="detail-val">${r.desc}</div></div>`;
+  document.getElementById('modal-status-sel').value=r.status;
+  document.getElementById('issue-modal').classList.add('show');
+}
+function updateIssueStatus() {
+  const ns=document.getElementById('modal-status-sel').value;
+  const idx=issues.findIndex(i=>i.id===currentIssueId);
+  if(idx>-1){ issues[idx].status=ns; }
+  closeModal('issue-modal');
+  showToast('✅ Issue '+currentIssueId+' updated to "'+ns+'"');
+  renderDashboard();
+  if(document.getElementById('page-issues').classList.contains('active')) renderIssues(currentIssueFilter);
+}
+
+/* ═══════════ EMERGENCY ═══════════ */
+function renderEmerg(filter) {
+  currentEmergFilter=filter;
+  document.querySelectorAll('#emerg-filter-bar .filter-btn').forEach(b=>{
+    b.classList.toggle('active', b.textContent.trim()===filter);
+  });
+  const data=filter==='All'?emergencies:emergencies.filter(e=>e.status===filter);
+  document.getElementById('emerg-tbody').innerHTML = data.length ? data.map(e=>`
+    <tr>
+      <td>${e.id}</td><td>${e.desc}</td><td>${e.cat}</td><td>${e.loc}</td><td>${e.by}</td>
+      <td>${pill(e.status)}</td><td>${e.date}</td>
+      <td>${e.status!=='Resolved'
+        ?`<button class="btn-danger-dark" onclick="resolveEmerg('${e.id}')">Resolve</button>`
+        :`<span style="font-size:12px;color:#16a34a;font-weight:600;">✔ Done</span>`}
+      </td>
+    </tr>`).join('') : `<tr><td colspan="8" style="text-align:center;padding:24px;color:#aaa;">No emergencies found</td></tr>`;
+}
+function filterEmerg(f){ currentEmergFilter=f; renderEmerg(f); }
+function resolveEmerg(id){
+  const idx=emergencies.findIndex(e=>e.id===id);
+  if(idx>-1){ emergencies[idx].status='Resolved'; }
+  renderEmerg(currentEmergFilter);
+  renderDashboard();
+  showToast('✅ Emergency '+id+' marked Resolved.');
+}
+
+/* ═══════════ STAFF ═══════════ */
+function renderStaff(filter) {
+  currentStaffFilter=filter;
+  document.querySelectorAll('#staff-filter-bar .filter-btn').forEach(b=>{
+    b.classList.toggle('active', b.textContent.trim()===filter);
+  });
+  const data=filter==='All'?staffList:staffList.filter(s=>s.status===filter);
+  const sc={Online:'#16a34a',Busy:'#d97706',Offline:'#888'};
+  document.getElementById('staff-grid').innerHTML=data.map((s,i)=>`
+    <div class="staff-card">
+      <div class="staff-avatar">${s.name.split(' ').map(w=>w[0]).join('')}</div>
+      <div style="flex:1;">
+        <div class="staff-name">${s.name}</div>
+        <div class="staff-role">${s.role}</div>
+        <div style="font-size:12px;font-weight:600;margin-top:3px;color:${sc[s.status]};">● ${s.status}</div>
+        <div style="font-size:11px;color:#aaa;margin-top:2px;">${s.assigned} issue${s.assigned!==1?'s':''} assigned</div>
+      </div>
+      <div class="d-flex flex-column gap-2 align-items-end">
+        <a href="mailto:${s.email}" style="color:#792117;font-size:16px;" title="${s.email}"><i class="bi bi-envelope"></i></a>
+        <span style="color:#792117;font-size:16px;cursor:pointer;" title="${s.phone}"><i class="bi bi-telephone"></i></span>
+        <span style="color:#ccc;font-size:15px;cursor:pointer;" onclick="removeStaff(${staffList.indexOf(s)})" title="Remove"><i class="bi bi-trash"></i></span>
+      </div>
+    </div>`).join('');
+  document.getElementById('s-total').textContent   = staffList.length;
+  document.getElementById('s-online').textContent  = staffList.filter(s=>s.status==='Online').length;
+  document.getElementById('s-busy').textContent    = staffList.filter(s=>s.status==='Busy').length;
+  document.getElementById('s-offline').textContent = staffList.filter(s=>s.status==='Offline').length;
+}
+function filterStaff(f){ currentStaffFilter=f; renderStaff(f); }
+function openAddStaff(){ document.getElementById('staff-modal').classList.add('show'); }
+function addStaff(){
+  const name=document.getElementById('ns-name').value.trim();
+  if(!name){ showToast('⚠️ Please enter a name.'); return; }
+  staffList.push({name, role:document.getElementById('ns-role').value, email:document.getElementById('ns-email').value.trim(), phone:document.getElementById('ns-phone').value.trim(), status:'Online', assigned:0});
+  closeModal('staff-modal');
+  renderStaff(currentStaffFilter);
+  showToast('✅ '+name+' added to staff.');
+  ['ns-name','ns-email','ns-phone'].forEach(id=>document.getElementById(id).value='');
+}
+function removeStaff(idx){
+  const name=staffList[idx].name;
+  staffList.splice(idx,1);
+  renderStaff(currentStaffFilter);
+  renderDashboard();
+  showToast('🗑️ '+name+' removed from staff.');
+}
+
+/* ═══════════ SUPPORT ═══════════ */
+function renderSupport(){
+  document.getElementById('support-tbody').innerHTML=supportTickets.map(t=>`
+    <tr>
+      <td>${t.id}</td><td>${t.student}</td><td>${t.subject}</td>
+      <td>${pill(t.status)}</td><td>${t.date}</td>
+      <td>${t.status!=='Closed'
+        ?`<button class="btn-sm-maroon" onclick="openSupportReply('${t.id}')">Reply</button>`
+        :`<span style="font-size:12px;color:#888;">Closed</span>`}
+      </td>
+    </tr>`).join('');
+}
+function openSupportReply(id){
+  const t=supportTickets.find(x=>x.id===id); if(!t) return;
+  currentSupportId=id;
+  document.getElementById('sup-modal-title').textContent='Reply to '+t.id;
+  document.getElementById('sup-modal-info').innerHTML=`<strong>Student:</strong> ${t.student}<br><strong>Subject:</strong> ${t.subject}<br><strong>Date:</strong> ${t.date}`;
+  document.getElementById('sup-reply').value='';
+  document.getElementById('support-modal').classList.add('show');
+}
+function sendSupportReply(){
+  const reply=document.getElementById('sup-reply').value.trim();
+  if(!reply){ showToast('⚠️ Please type a reply.'); return; }
+  const idx=supportTickets.findIndex(t=>t.id===currentSupportId);
+  const student=idx>-1?supportTickets[idx].student:'student';
+  if(idx>-1) supportTickets[idx].status='Replied';
+  closeModal('support-modal');
+  renderSupport();
+  showToast('✅ Reply sent to '+student+'.');
+}
+
+/* ═══════════ SEARCH ═══════════ */
+function handleSearch(q){
+  if(!q.trim()) return;
+  const ql=q.toLowerCase();
+  const match=issues.find(i=>i.id.toLowerCase().includes(ql)||i.cat.toLowerCase().includes(ql)||i.loc.toLowerCase().includes(ql)||i.by.toLowerCase().includes(ql));
+  if(match){ showPage('issues'); filterIssues('All'); showToast('🔍 Showing results for "'+q+'"'); }
+}
+
+/* ═══════════ MODALS ═══════════ */
+function closeModal(id){ document.getElementById(id).classList.remove('show'); }
+document.querySelectorAll('.modal-overlay').forEach(m=>{
+  m.addEventListener('click',e=>{ if(e.target===m) m.classList.remove('show'); });
+});
+
+/* ═══════════ TOAST ═══════════ */
+function showToast(msg){
+  const w=document.getElementById('toast-wrap');
+  w.style.display='block';
+  w.innerHTML=`<div class="toast-msg"><i class="bi bi-check-circle-fill" style="color:#4ade80;font-size:18px;"></i>${msg}</div>`;
+  setTimeout(()=>{ w.style.display='none'; },3500);
+}
+
+/* INIT */
+renderDashboard();
+</script>
+</body>
+</html>
