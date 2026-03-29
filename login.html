@@ -21,7 +21,6 @@
 
     body { font-family: 'Inter', sans-serif; background: var(--bg); min-height: 100vh; }
 
-    /* Header */
     .site-header {
       display: flex; align-items: center; justify-content: space-between;
       padding: 0 24px; height: 130px;
@@ -32,14 +31,12 @@
       letter-spacing: -0.28px; line-height: 1.5; white-space: nowrap;
     }
 
-    /* Nav bar */
     .nav-bar {
       background: var(--brand); height: 80px;
       display: flex; align-items: center; justify-content: center;
     }
     .nav-bar h1 { font-size: 32px; font-weight: 700; color: #fff; letter-spacing: 1px; }
 
-    /* Page body */
     .page-body {
       display: flex; justify-content: center;
       align-items: flex-start; padding: 60px 24px 80px;
@@ -48,170 +45,120 @@
     .screen { width: 100%; display: flex; justify-content: center; }
     .card { background: var(--card-bg); width: 100%; max-width: 700px; border-radius: var(--radius); }
 
-    /* Login card */
-    #login-screen .card { padding: 50px 60px 60px; }
+    #login-screen .card { padding: 50px 120px 60px; }
+
 
     .field-group { margin-bottom: 28px; }
     .field-group label {
       display: block; font-size: 22px; font-weight: 600;
       color: var(--text-muted); margin-bottom: 10px;
     }
-    .field-group input[type="email"],
-    .field-group input[type="password"] {
+    .field-group input {
       width: 100%; height: 60px; background: var(--input-bg);
       border: none; border-radius: var(--radius);
-      padding: 0 16px; font-family: 'Inter', sans-serif;
-      font-size: 16px; color: var(--text); outline: none; transition: box-shadow 0.2s;
+      padding: 0 16px; font-size: 16px;
     }
-    .field-group input:focus { box-shadow: 0 0 0 2px var(--brand); }
 
     .role-group { margin-bottom: 36px; }
-    .role-group .role-label {
-      font-size: 22px; font-weight: 600;
-      color: var(--text-muted); margin-bottom: 14px; display: block;
-    }
-    .role-options { display: flex; gap: 32px; align-items: center; }
-    .role-option {
-      display: flex; align-items: center; gap: 8px;
-      cursor: pointer; font-size: 20px; font-weight: 600; color: var(--text);
-    }
-    .role-option input[type="radio"] {
-      appearance: none; -webkit-appearance: none;
-      width: 22px; height: 22px; border: 2px solid var(--brand);
-      border-radius: 50%; cursor: pointer; flex-shrink: 0; transition: background 0.15s;
-    }
-    .role-option input[type="radio"]:checked {
-      background: var(--brand); border-color: var(--brand);
-      box-shadow: inset 0 0 0 4px #fff;
-    }
+    .role-options { display: flex; gap: 32px; }
 
     .actions { display: flex; flex-direction: column; align-items: center; gap: 18px; }
 
     .btn-primary {
       width: 260px; height: 55px; background: var(--brand);
       color: #fff; border: none; border-radius: var(--radius);
-      font-family: 'Inter', sans-serif; font-size: 22px; font-weight: 700;
-      cursor: pointer; transition: background 0.2s, transform 0.1s;
+      font-size: 22px; font-weight: 700;
+      cursor: pointer;
     }
-    .btn-primary:hover  { background: var(--brand-hover); }
-    .btn-primary:active { transform: scale(0.98); }
 
-    .forgot-link {
-      font-size: 22px; font-weight: 700; color: var(--brand);
-      text-decoration: none; transition: opacity 0.2s;
-    }
-    .forgot-link:hover { opacity: 0.75; text-decoration: underline; }
-
-    /* Success card */
     #success-screen { display: none; }
     #success-screen .card {
-      padding: 80px 60px 70px;
+      padding: 80px 60px;
       display: flex; flex-direction: column;
-      align-items: center; gap: 20px; text-align: center;
-    }
-    .success-icon {
-      width: 80px; height: 80px; background: var(--brand);
-      border-radius: 50%; display: flex;
-      align-items: center; justify-content: center; margin-bottom: 10px;
-    }
-    .success-icon svg {
-      width: 44px; height: 44px; stroke: #fff;
-      stroke-width: 3; fill: none;
-      stroke-linecap: round; stroke-linejoin: round;
-    }
-    .success-title   { font-size: 42px; font-weight: 600; color: var(--text-muted); }
-    .success-subtitle{ font-size: 28px; font-weight: 600; color: var(--text-muted); margin-bottom: 20px; }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-      .site-header { flex-direction: column; align-items: flex-start; gap: 10px; height: auto; padding: 16px; }
-      .site-title  { font-size: 18px; }
-      .nav-bar h1  { font-size: 22px; }
-      #login-screen .card   { padding: 32px 24px 40px; }
-      #success-screen .card { padding: 48px 24px; }
-      .field-group label, .role-group .role-label { font-size: 18px; }
-      .btn-primary     { width: 100%; font-size: 18px; }
-      .forgot-link     { font-size: 18px; }
-      .success-title   { font-size: 28px; }
-      .success-subtitle{ font-size: 20px; }
+      align-items: center; gap: 20px;
     }
   </style>
 </head>
+
 <body>
 
-  <header class="site-header">
-    <div class="logo">
-      <img src="https://www.figma.com/api/mcp/asset/1b464af9-1993-446b-8ba3-0095453f08e6" alt="Ahmedabad University logo" />
+<header class="site-header">
+  <div class="logo">
+    <img src="https://www.figma.com/api/mcp/asset/1b464af9-1993-446b-8ba3-0095453f08e6" />
+  </div>
+  <span class="site-title">Smart Campus Issue Reporting System</span>
+</header>
+
+<nav class="nav-bar"><h1>LOGIN</h1></nav>
+
+<main class="page-body">
+
+<!-- LOGIN SCREEN -->
+<div id="login-screen" class="screen">
+  <form method="POST">
+  <div class="card">
+
+    <div class="field-group">
+      <label>Email</label>
+      <input type="email" name="email" required />
     </div>
-    <span class="site-title">Smart Campus Issue Reporting System</span>
-  </header>
 
-  <nav class="nav-bar"><h1>LOGIN</h1></nav>
+    <div class="field-group">
+      <label>Password</label>
+      <input type="password" name="password" required />
+    </div>
 
-  <main class="page-body">
-
-    <!-- LOGIN SCREEN -->
-    <div id="login-screen" class="screen">
-      <div class="card">
-
-        <div class="field-group">
-          <label for="email">Email</label>
-          <input type="email" id="email" autocomplete="username" />
-        </div>
-
-        <div class="field-group">
-          <label for="password">Password</label>
-          <input type="password" id="password" autocomplete="current-password" />
-        </div>
-
-        <div class="role-group">
-          <span class="role-label">Login as:</span>
-          <div class="role-options">
-            <label class="role-option">
-              <input type="radio" name="role" value="student" checked /> Student
-            </label>
-            <label class="role-option">
-              <input type="radio" name="role" value="admin" /> Admin
-            </label>
-          </div>
-        </div>
-
-        <div class="actions">
-          <button class="btn-primary" onclick="handleLogin()">Login</button>
-          <a href="#" class="forgot-link">Forgot Password?</a>
-        </div>
-
+    <div class="role-group">
+      <div class="role-options">
+        <label><input type="radio" name="role" value="student" checked> Student</label>
+        <label><input type="radio" name="role" value="admin"> Admin</label>
       </div>
     </div>
 
-    <!-- SUCCESS SCREEN -->
-    <div id="success-screen" class="screen">
-      <div class="card">
-        <div class="success-icon">
-          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-        </div>
-        <p class="success-title">Login Successfully</p>
-        <p class="success-subtitle">Click OK to Enter the Dashboard</p>
-        <button class="btn-primary" onclick="goToDashboard()">OK</button>
-      </div>
+    <div class="actions">
+      <button class="btn-primary" type="submit">Login</button>
+      <p style="color:red;">{{ error }}</p>
     </div>
 
-  </main>
+  </div>
+  </form>
+</div>
 
-  <script>
-    function handleLogin() {
-      const email    = document.getElementById('email').value.trim();
-      const password = document.getElementById('password').value;
-      if (!email || !password) { alert('Please enter both email and password.'); return; }
-      document.getElementById('login-screen').style.display  = 'none';
-      document.getElementById('success-screen').style.display = 'flex';
-    }
+<!-- SUCCESS SCREEN -->
+<div id="success-screen" class="screen">
+  <div class="card">
 
-    function goToDashboard() {
-      const role = document.querySelector('input[name="role"]:checked').value;
-      window.location.href = role === 'admin' ? 'admin-dashboard.html' : 'student-dashboard.html';
-    }
-  </script>
+    <h2>Login Successfully</h2>
+    <p>Click OK to Enter the Dashboard</p>
+
+    <!-- hidden role -->
+    <input type="hidden" id="userRole" value="{{ role }}">
+
+    <button class="btn-primary" onclick="goToDashboard()">OK</button>
+
+  </div>
+</div>
+
+</main>
+
+<script>
+const loginSuccess = "{{ success }}";
+
+if (loginSuccess === "true") {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('success-screen').style.display = 'flex';
+}
+
+function goToDashboard() {
+  const role = document.getElementById("userRole").value.trim();
+
+  if (role === "admin") {
+    window.location.href = "/admin";
+  } else {
+    window.location.href = "/user";
+  }
+}
+</script>
 
 </body>
 </html>

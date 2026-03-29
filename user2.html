@@ -405,79 +405,78 @@
   <div class="content">
     <div class="welcome-line">Submit a New Issue</div>
     <div class="page-heading">File Complaint</div>
-    <div class="form-panel">
-      <div class="row g-3">
-        <div class="col-md-6">
-          <label>Full Name</label>
-          <input type="text" class="form-control" placeholder="Enter your full name" value="Alex Johnson"/>
-        </div>
-        <div class="col-md-6">
-          <label>Student ID</label>
-          <input type="text" class="form-control" placeholder="e.g. AU2021001" value="AU2021045"/>
-        </div>
-        <div class="col-md-6">
-          <label>Email Address</label>
-          <input type="email" class="form-control" placeholder="your@university.edu" value="alex@ahduni.edu.in"/>
-        </div>
-        <div class="col-md-6">
-          <label>Phone Number</label>
-          <input type="text" class="form-control" placeholder="+91 XXXXX XXXXX"/>
-        </div>
-        <div class="col-md-6">
-          <label>Category</label>
-          <select class="form-select">
-            <option value="">Select a category</option>
-            <option>Techbase</option>
-            <option>HelpDesk</option>
-            <option>Cleanliness</option>
-            <option>Electrical</option>
-            <option>Maintenance</option>
-            <option>Security</option>
-            <option>Other</option>
-          </select>
-        </div>
-        <div class="col-md-6">
-          <label>Location / Building</label>
-          <select class="form-select">
-            <option value="">Select location</option>
-            <option>GICT Building</option>
-            <option>SAS, Room 101</option>
-            <option>Amphitheatre</option>
-            <option>University Centre</option>
-            <option>Airport Area</option>
-            <option>AMSOM, Room 103</option>
-            <option>Library</option>
-            <option>Hostel Block A</option>
-            <option>Hostel Block B</option>
-          </select>
-        </div>
-        <div class="col-12">
-          <label>Issue Title</label>
-          <input type="text" class="form-control" placeholder="Brief description of the issue"/>
-        </div>
-        <div class="col-12">
-          <label>Detailed Description</label>
-          <textarea class="form-control" rows="4" placeholder="Please describe the issue in detail, including when it started and how it affects you..."></textarea>
-        </div>
-        <div class="col-md-6">
-          <label>Priority</label>
-          <select class="form-select">
-            <option>Low</option><option selected>Medium</option>
-            <option>High</option><option>Urgent</option>
-          </select>
-        </div>
-        <div class="col-md-6">
-          <label>Attach Photo / File (optional)</label>
-          <input type="file" class="form-control" accept="image/*,.pdf"/>
-        </div>
-        <div class="col-12 d-flex gap-3 mt-2">
-          <button class="submit-btn" onclick="submitComplaint()"><i class="bi bi-send me-2"></i>Submit Complaint</button>
-          <button class="cancel-btn" onclick="showPage('dashboard')">Cancel</button>
+
+    <!-- 🔥 FORM START -->
+    <form id="complaintForm"></form>
+      
+      <div class="form-panel">
+        <div class="row g-3">
+
+          <!-- CATEGORY -->
+          <div class="col-md-6">
+            <label>Category</label>
+            <select class="form-select" name="category" required>
+              <option value="">Select a category</option>
+              <option>Techbase</option>
+              <option>HelpDesk</option>
+              <option>Cleanliness</option>
+              <option>Electrical</option>
+              <option>Maintenance</option>
+              <option>Security</option>
+              <option>Other</option>
+            </select>
+          </div>
+
+          <!-- LOCATION -->
+          <div class="col-md-6">
+            <label>Location / Building</label>
+            <select class="form-select" name="location" required>
+              <option value="">Select location</option>
+              <option>GICT Building</option>
+              <option>SAS, Room 101</option>
+              <option>Amphitheatre</option>
+              <option>University Centre</option>
+              <option>Airport Area</option>
+              <option>AMSOM, Room 103</option>
+              <option>Library</option>
+              <option>Hostel Block A</option>
+              <option>Hostel Block B</option>
+            </select>
+          </div>
+
+          <!-- DESCRIPTION -->
+          <div class="col-12">
+            <label>Detailed Description</label>
+            <textarea class="form-control" name="description" rows="4"
+              placeholder="Please describe the issue in detail..." required></textarea>
+          </div>
+
+          <!-- FILE -->
+          <div class="col-md-6">
+            <label>Attach Photo / File (optional)</label>
+            <input type="file" class="form-control" name="image" accept="image/*,.pdf"/>
+          </div>
+
+          <!-- BUTTONS -->
+          <div class="col-12 d-flex gap-3 mt-2">
+            <button type="button" class="submit-btn" onclick="submitComplaint()">
+                <i class="bi bi-send me-2"></i>Submit Complaint
+            </button>
+
+            <button type="button" class="cancel-btn" onclick="showPage('dashboard')">
+              Cancel
+            </button>
+          </div>
+
         </div>
       </div>
-    </div>
+
+    </form>
+    <!-- 🔥 FORM END -->
+
   </div>
 </div>
+
 
 <!-- ════════ PAGE 3: MY COMPLAINTS ════════ -->
 <div class="page" id="page-my-complaints">
@@ -770,9 +769,33 @@ function selectEmergType(el) {
    SUBMIT HANDLERS
 ══════════════════════════════════ */
 function submitComplaint() {
-  var newId = '#' + ('0000' + (Math.floor(Math.random() * 9000) + 1000)).slice(-5);
-  showToast('Complaint submitted successfully! ID: ' + newId);
-  setTimeout(function() { showPage('my-complaints'); }, 1200);
+  const form = document.getElementById('complaintForm');
+  const formData = new FormData(form);
+
+  fetch('/submit-complaint', {
+    method: 'POST',
+    body: formData
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.status === "success") {
+
+      // success message
+      showToast("Complaint submitted successfully!");
+
+      // clear form
+      form.reset();
+
+      // redirect to dashboard
+      setTimeout(() => {
+        showPage('dashboard');
+      }, 1500);
+    }
+  })
+  .catch(err => {
+    console.error(err);
+    showToast("Error submitting complaint!");
+  });
 }
 
 function submitEmergency() {
